@@ -1,128 +1,242 @@
-< !DOCTYPE html >
-    <html lang="en">
-        <head>
-            <meta charset="UTF-8" />
-            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-            <title>Prashna Singh | Developer Portfolio</title>
-            <link rel="stylesheet" href="./css/style.css" />
-        </head>
-        <body>
-            <header class="topbar">
-                <div class="container topbar-inner">
-                    <a href="./index.html" class="brand">{PRASHNA}</a>
-                    <nav class="nav">
-                        <a href="#featured">Featured</a>
-                        <a href="#all-repos">All Repositories</a>
-                        <a href="#about">About</a>
-                        <a href="https://github.com/prashnaraa-byte" target="_blank" rel="noreferrer">GitHub ↗</a>
-                    </nav>
-                </div>
-            </header>
+const USERNAME = "prashnaraa-byte";
 
-            <main class="container">
-                <!-- Featured Projects Section -->
-                <section id="featured" class="section">
-                    <div class="section-header">
-                        <h1>Featured Projects</h1>
-                        <div class="filter-bar">
-                            <button class="filter-btn active" data-filter="all">All</button>
-                            <button class="filter-btn" data-filter="python">Python</button>
-                            <button class="filter-btn" data-filter="web">Web / AI</button>
-                        </div>
-                    </div>
+// 1. Dark / Light Theme Toggle (persists across pages)
+const savedTheme = localStorage.getItem("portfolio-theme") || "light";
+document.documentElement.setAttribute("data-theme", savedTheme);
 
-                    <div class="grid">
-                        <article class="card" data-category="python">
-                            <div class="card-top">
-                                <h2>WearCast (Autofit Team Project)</h2>
-                                <a href="https://github.com/prashnaraa-byte" target="_blank" rel="noreferrer" class="card-link">GitHub ↗</a>
-                            </div>
-                            <p class="meta">Team Project · Notification &amp; Automation Module</p>
-                            <ul class="card-bullets">
-                                <li>Built the Telegram notification pipeline connecting real-time weather API data with AI outfit recommendations.</li>
-                                <li>Structured modular Python automation workflows for scheduled group alerts.</li>
-                            </ul>
-                            <div class="tags">
-                                <span>Python</span>
-                                <span>Telegram Bot API</span>
-                                <span>Weather API</span>
-                            </div>
-                        </article>
+const themeBtn = document.getElementById("theme-toggle");
+if (themeBtn) {
+    themeBtn.addEventListener("click", () => {
+        const current = document.documentElement.getAttribute("data-theme");
+        const next = current === "dark" ? "light" : "dark";
+        document.documentElement.setAttribute("data-theme", next);
+        localStorage.setItem("portfolio-theme", next);
+    });
+}
 
-                        <article class="card" data-category="web">
-                            <div class="card-top">
-                                <h2>YOLO Face-Detection &amp; Auto-Labeler</h2>
-                                <a href="https://github.com/prashnaraa-byte" target="_blank" rel="noreferrer" class="card-link">GitHub ↗</a>
-                            </div>
-                            <p class="meta">Solo Project · Computer Vision &amp; Web App</p>
-                            <ul class="card-bullets">
-                                <li>Trained a custom Ultralytics YOLO face-detection model integrated with a live webcam feed.</li>
-                                <li>Automated bounding-box labeling in a browser interface to streamline dataset creation.</li>
-                            </ul>
-                            <div class="tags">
-                                <span>Python</span>
-                                <span>Ultralytics YOLO</span>
-                                <span>Computer Vision</span>
-                            </div>
-                        </article>
+// 2. Render Homepage (index.html)
+function initHomePage() {
+    const featuredGrid = document.getElementById("featured-grid");
+    if (!featuredGrid) return;
 
-                        <article class="card" data-category="web">
-                            <div class="card-top">
-                                <h2>Cyworld-Inspired Mini-Homepage</h2>
-                                <a href="https://github.com/prashnaraa-byte" target="_blank" rel="noreferrer" class="card-link">GitHub ↗</a>
-                            </div>
-                            <p class="meta">Solo Project · Full-Stack Web App</p>
-                            <ul class="card-bullets">
-                                <li>Designed an interactive retro mini-homepage interface powered by a Next.js frontend.</li>
-                                <li>Connected custom REST endpoints via a Python backend for interactive profile features.</li>
-                            </ul>
-                            <div class="tags">
-                                <span>Next.js</span>
-                                <span>Python</span>
-                                <span>Full-Stack</span>
-                            </div>
-                        </article>
+    function renderFeatured(filter = "all") {
+        const filtered = FEATURED_PROJECTS.filter(
+            (p) => filter === "all" || p.category === filter
+        );
 
-                        <article class="card" data-category="python">
-                            <div class="card-top">
-                                <h2>CLI Mini-Games Suite</h2>
-                                <a href="https://github.com/hwangjh0220/minigame_poject" target="_blank" rel="noreferrer" class="card-link">Repo ↗</a>
-                            </div>
-                            <p class="meta">Collaborative Project · Python CLI &amp; Testing</p>
-                            <ul class="card-bullets">
-                                <li>Developed a custom terminal Tic-Tac-Toe Deluxe module and Hangman game with unit tests.</li>
-                                <li>Collaborated via Git feature branches and Pull Requests with automated test checks.</li>
-                            </ul>
-                            <div class="tags">
-                                <span>Python</span>
-                                <span>Pytest</span>
-                                <span>Git Workflow</span>
-                            </div>
-                        </article>
-                    </div>
-                </section>
+        featuredGrid.innerHTML = filtered
+            .map(
+                (p) => `
+        <article class="card" onclick="window.location.href='./project.html?id=${p.id}'">
+          <div class="card-top-row">
+            <div class="icon-badge ${p.badgeClass}">${p.icon}</div>
+            <div class="circle-actions" onclick="event.stopPropagation()">
+              <a href="./project.html?id=${p.id}" class="circle-btn" title="Project Details">→</a>
+              <a href="${p.repoUrl}" target="_blank" rel="noreferrer" class="circle-btn" title="GitHub Repository">⌘</a>
+              ${p.liveUrl ? `<a href="${p.liveUrl}" target="_blank" rel="noreferrer" class="circle-btn" title="Live Demo">🌐</a>` : ""}
+            </div>
+          </div>
 
-                <!-- Automatic GitHub Repositories Section -->
-                <section id="all-repos" class="section">
-                    <div class="section-header">
-                        <h2>All GitHub Repositories</h2>
-                        <span id="repo-count" class="meta">Loading repositories from GitHub...</span>
-                    </div>
-                    <div id="repo-grid" class="grid"></div>
-                </section>
+          <div>
+            <h3 class="card-title">${p.title}</h3>
+            <p class="card-subtitle">${p.subtitle}</p>
+          </div>
 
-                <!-- About Section -->
-                <section id="about" class="section about-box">
-                    <h2>About</h2>
-                    <p>
-                        Computer Science &amp; Engineering undergraduate building full-stack web applications,
-                        Python automation tools, computer vision pipelines, and microcontroller simulations.
-                        Explore all repositories directly at
-                        <a href="https://github.com/prashnaraa-byte" target="_blank" rel="noreferrer">github.com/prashnaraa-byte</a>.
-                    </p>
-                </section>
-            </main>
+          <div class="role-badge">👤 ${p.role}</div>
 
-            <script src="./js/main.js"></script>
-        </body>
-    </html>
+          <ul class="card-bullets">
+            ${p.summaryBullets.map((b) => `<li>${b}</li>`).join("")}
+          </ul>
+
+          <div class="tags">
+            ${p.tags.map((t) => `<span>${t}</span>`).join("")}
+          </div>
+        </article>
+      `
+            )
+            .join("");
+    }
+
+    renderFeatured();
+
+    document.querySelectorAll(".filter-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+            document.querySelectorAll(".filter-btn").forEach((b) => b.classList.remove("active"));
+            btn.classList.add("active");
+            renderFeatured(btn.dataset.filter);
+        });
+    });
+
+    // Load all public GitHub repositories
+    loadAllRepos();
+}
+
+async function loadAllRepos() {
+    const repoGrid = document.getElementById("repo-grid");
+    const repoCount = document.getElementById("repo-count");
+    if (!repoGrid) return;
+
+    try {
+        const res = await fetch(`https://api.github.com/users/${USERNAME}/repos?sort=updated&per_page=100`);
+        if (!res.ok) throw new Error("GitHub API error");
+        const repos = await res.json();
+        const list = repos.filter((r) => r.name.toLowerCase() !== `${USERNAME}.github.io`);
+
+        repoCount.textContent = `${list.length} public repositories`;
+
+        repoGrid.innerHTML = list
+            .map((repo) => {
+                const updated = new Date(repo.updated_at).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                });
+                const desc = repo.description || "Click to view repository details, README, and source link.";
+                return `
+          <article class="card" onclick="window.location.href='./project.html?repo=${encodeURIComponent(repo.name)}'">
+            <div class="card-top-row">
+              <div class="icon-badge badge-blue">📁</div>
+              <div class="circle-actions" onclick="event.stopPropagation()">
+                <a href="./project.html?repo=${encodeURIComponent(repo.name)}" class="circle-btn" title="Details">→</a>
+                <a href="${repo.html_url}" target="_blank" rel="noreferrer" class="circle-btn" title="Source Code">⌘</a>
+              </div>
+            </div>
+            <div>
+              <h3 class="card-title">${repo.name}</h3>
+              <p class="card-subtitle">Updated ${updated}</p>
+            </div>
+            <p style="font-size: 0.9rem; opacity: 0.9;">${desc}</p>
+            <div class="tags">
+              ${repo.language ? `<span>${repo.language}</span>` : ""}
+              ${(repo.topics || []).slice(0, 3).map((t) => `<span>${t}</span>`).join("")}
+            </div>
+          </article>
+        `;
+            })
+            .join("");
+    } catch (e) {
+        repoCount.textContent = "Unable to sync right now";
+    }
+}
+
+// 3. Render Project Detail Page (project.html)
+async function initDetailPage() {
+    const root = document.getElementById("detail-root");
+    if (!root) return;
+
+    const params = new URLSearchParams(window.location.search);
+    const projectId = params.get("id");
+    const repoName = params.get("repo");
+
+    // Case A: Featured project from projects-data.js
+    if (projectId) {
+        const project = FEATURED_PROJECTS.find((p) => p.id === projectId) || FEATURED_PROJECTS[0];
+        document.title = `${project.title} | Portfolio`;
+        const topLink = document.getElementById("repo-top-link");
+        if (topLink) topLink.href = project.repoUrl;
+
+        root.innerHTML = `
+      <section class="detail-box">
+        <div class="detail-header">
+          <div>
+            <div class="role-badge" style="margin-bottom: 10px;">👤 ${project.role}</div>
+            <h1>${project.title}</h1>
+            <p class="card-subtitle">${project.subtitle}</p>
+          </div>
+          <div class="hero-links">
+            <a href="${project.repoUrl}" target="_blank" rel="noreferrer" class="btn-primary">View on GitHub ↗</a>
+            ${project.liveUrl ? `<a href="${project.liveUrl}" target="_blank" rel="noreferrer" class="btn-secondary">Live Demo ↗</a>` : ""}
+          </div>
+        </div>
+
+        <h3 style="margin-bottom: 12px; font-size: 1.05rem;">Implementation &amp; Architecture</h3>
+        <ul class="card-bullets">
+          ${project.architectureBullets.map((b) => `<li>${b}</li>`).join("")}
+        </ul>
+
+        <div class="tags" style="margin-top: 18px;">
+          ${project.tags.map((t) => `<span>${t}</span>`).join("")}
+        </div>
+      </section>
+
+      <section class="detail-box">
+        <h2 style="font-size: 1.2rem; margin-bottom: 6px;">Verified Screens &amp; Output</h2>
+        <p class="card-subtitle">Captured test runs, dashboards, and live execution proof.</p>
+        <div class="verified-grid">
+          ${project.screens
+                .map(
+                    (s) => `
+            <div class="screen-card">
+              <div class="screen-bar">
+                <span>${s.label}</span>
+                ${s.image ? `<button class="zoom-btn" onclick="openLightbox('${s.image}')">Full Screen</button>` : ""}
+              </div>
+              ${s.image
+                            ? `<img src="${s.image}" alt="${s.label}" />`
+                            : `<div class="screen-placeholder">${s.caption}</div>`
+                        }
+            </div>
+          `
+                )
+                .join("")}
+        </div>
+      </section>
+    `;
+        return;
+    }
+
+    // Case B: Any GitHub Repository clicked from "All GitHub Repositories"
+    if (repoName) {
+        root.innerHTML = `<div class="detail-box"><p class="card-subtitle">Loading ${repoName} from GitHub...</p></div>`;
+        try {
+            const res = await fetch(`https://api.github.com/repos/${USERNAME}/${encodeURIComponent(repoName)}`);
+            if (!res.ok) throw new Error("Repo not found");
+            const repo = await res.json();
+
+            document.title = `${repo.name} | Portfolio`;
+            const topLink = document.getElementById("repo-top-link");
+            if (topLink) topLink.href = repo.html_url;
+
+            root.innerHTML = `
+        <section class="detail-box">
+          <div class="detail-header">
+            <div>
+              <div class="role-badge" style="margin-bottom: 10px;">📁 GitHub Repository</div>
+              <h1>${repo.name}</h1>
+              <p class="card-subtitle">${repo.description || "Repository hosted on GitHub."}</p>
+            </div>
+            <div class="hero-links">
+              <a href="${repo.html_url}" target="_blank" rel="noreferrer" class="btn-primary">Open Repository ↗</a>
+              ${repo.homepage ? `<a href="${repo.homepage}" target="_blank" rel="noreferrer" class="btn-secondary">Live Deployment ↗</a>` : ""}
+            </div>
+          </div>
+
+          <ul class="card-bullets">
+            <li><strong>Primary Language:</strong> ${repo.language || "Multiple / Not specified"}</li>
+            <li><strong>Default Branch:</strong> ${repo.default_branch}</li>
+            <li><strong>Last Updated:</strong> ${new Date(repo.updated_at).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</li>
+          </ul>
+
+          <div class="tags" style="margin-top: 18px;">
+            ${repo.language ? `<span>${repo.language}</span>` : ""}
+            ${(repo.topics || []).map((t) => `<span>${t}</span>`).join("")}
+          </div>
+        </section>
+      `;
+        } catch (e) {
+            root.innerHTML = `<div class="detail-box"><p>Could not load repository details. <a href="./index.html">Return to Portfolio</a></p></div>`;
+        }
+    }
+}
+
+function openLightbox(src) {
+    const lb = document.getElementById("lightbox");
+    const img = document.getElementById("lightbox-img");
+    if (lb && img) {
+        img.src = src;
+        lb.classList.add("open");
+    }
+}
+
+initHomePage();
+initDetailPage();

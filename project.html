@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Project Details | Prashna Singh</title>
+    <link rel="stylesheet" href="./css/style.css" />
+</head>
+
+<body>
+    <header class="topbar">
+        <div class="container topbar-inner">
+            <a href="./index.html" class="brand">← <span>Project List</span></a>
+            <nav class="nav">
+                <a id="repo-top-link" href="https://github.com/prashnaraa-byte" target="_blank" rel="noreferrer">GitHub
+                    Repo ↗</a>
+                <button id="theme-toggle" class="theme-btn" title="Toggle Dark/Light Theme">◐</button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container" id="detail-root">
+        <!-- Populated dynamically by js/main.js -->
+    </main>
+
+    <div id="lightbox" class="lightbox" onclick="this.classList.remove('open')">
+        <img id="lightbox-img" src="" alt="Full screen preview" />
+    </div>
+
+    <script src="./js/projects-data.js"></script>
+    <script src="./js/main.js"></script>
+</body>
+
+</html>
